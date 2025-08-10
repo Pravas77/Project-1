@@ -22,12 +22,11 @@ public class LikeAggregator {
     @Scheduled(fixedRate = 30000)
     public void aggregateLikes() {
 
-        System.out.println("ALWAYS   ALWAYS    ALWAYS");
         Set<String> keys = redisTemplate.keys("post:like:*");
         if (keys == null || keys.isEmpty()) return;
 
         for (String key : keys) {
-            System.out.println("START   " +  key  + "   START");
+
             Long postId = Long.valueOf(key.substring(10));
             String likeCountStr = redisTemplate.opsForValue().get(key);
             Long count = Long.valueOf(likeCountStr);
@@ -43,9 +42,7 @@ public class LikeAggregator {
             currentPost.setLikeCount(currentStoredCount + count);
             currentPost.setTitle("XYZ");
             repo.save(currentPost);
-         //   redisTemplate.delete(key);
 
-            System.out.println("END   " +  key  + "   END");
         }
 
         redisTemplate.getConnectionFactory().getConnection().flushDb();
